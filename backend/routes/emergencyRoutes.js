@@ -55,14 +55,11 @@ router.post('/sos', protect, async (req, res) => {
     // Initialize transporter (using a mocked service or user's provided credentials if available)
     // For demo purposes, we will mock the send or use Ethereal if no auth provided
     // To make this fully functional, the user needs to add EMAIL_USER and EMAIL_PASS to .env
-    const emailUser = process.env.EMAIL_USER || 'malhotrakunal848@gmail.com';
-    const emailPass = process.env.EMAIL_PASS || 'qwvjagmcequwnhil';
-
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: emailUser,
-        pass: emailPass
+        user: process.env.EMAIL_USER || 'demo@gmail.com',
+        pass: process.env.EMAIL_PASS || 'demo123'
       }
     });
 
@@ -76,10 +73,10 @@ router.post('/sos', protect, async (req, res) => {
         text: `This is an Emergency SOS Alert triggered by ${user.name}.\n\nCurrent Location: ${mapLink}\n\nPlease check on them immediately!`
       };
 
-      if (emailUser && emailPass) {
+      if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
         await transporter.sendMail(mailOptions);
       } else {
-        console.log("Mocking SOS Email Send since EMAIL_USER/EMAIL_PASS not configured");
+        console.log("Mocking SOS Email Send since EMAIL_USER/EMAIL_PASS not configured in .env");
         console.log(mailOptions);
       }
     }
