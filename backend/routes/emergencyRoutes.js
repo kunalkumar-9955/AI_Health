@@ -67,7 +67,7 @@ router.post('/sos', protect, async (req, res) => {
 
     if (emailList.length > 0) {
       const mailOptions = {
-        from: '"AI Health Emergency" <noreply@aihealth.com>',
+        from: `"AI Health Emergency" <${process.env.EMAIL_USER}>`,
         to: emailList.join(','),
         subject: `🚨 EMERGENCY SOS ALERT from ${user.name}`,
         text: `This is an Emergency SOS Alert triggered by ${user.name}.\n\nCurrent Location: ${mapLink}\n\nPlease check on them immediately!`
