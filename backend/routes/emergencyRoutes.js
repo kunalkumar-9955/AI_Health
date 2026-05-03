@@ -87,4 +87,35 @@ router.post('/sos', protect, async (req, res) => {
   }
 });
 
+// Debug endpoint to test email
+router.get('/test-email', async (req, res) => {
+  try {
+    const emailUser = process.env.EMAIL_USER;
+    const emailPass = process.env.EMAIL_PASS;
+    
+    if (!emailUser || !emailPass) {
+      return res.status(400).json({ error: "Missing EMAIL_USER or EMAIL_PASS in environment variables" });
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: emailUser,
+        pass: emailPass
+      }
+    });
+
+    const info = await transporter.sendMail({
+      from: `"AI Health Test" <${emailUser}>`,
+      to: emailUser,
+      subject: "Test Email from AI Health Backend",
+      text: "If you are reading this, the email configuration on Render is working perfectly."
+    });
+
+    res.json({ success: true, messageId: info.messageId });
+  } catch (err) {
+    res.status(500).json({ error: err.message, stack: err.stack });
+  }
+});
+
 export default router;
