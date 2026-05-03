@@ -17,7 +17,7 @@ const Reminders = () => {
 
   const fetchReminders = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/reminders', {
+      const { data } = await axios.get(import.meta.env.VITE_API_URL + '/api/reminders', {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setReminders(data);
@@ -28,7 +28,7 @@ const Reminders = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.post('http://localhost:5000/api/reminders', { medicine, time, dose, repeatDaily }, {
+      const { data } = await axios.post(import.meta.env.VITE_API_URL + '/api/reminders', { medicine, time, dose, repeatDaily }, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setReminders(prev => [...prev, data]);
@@ -41,7 +41,7 @@ const Reminders = () => {
 
   const deleteReminder = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/reminders/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/reminders/${id}`, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setReminders(prev => prev.filter(r => r._id !== id));

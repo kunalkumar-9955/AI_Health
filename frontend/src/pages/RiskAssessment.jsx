@@ -15,7 +15,7 @@ const RiskAssessment = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.post('http://localhost:5000/api/premium/risk-assessment', formData, {
+      const { data } = await axios.post(import.meta.env.VITE_API_URL + '/api/premium/risk-assessment', formData, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setResult(data);

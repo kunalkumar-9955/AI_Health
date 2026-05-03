@@ -25,7 +25,7 @@ const Appointments = () => {
 
   const fetchAppointments = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/appointments', {
+      const { data } = await axios.get(import.meta.env.VITE_API_URL + '/api/appointments', {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setAppointments(data);
@@ -36,7 +36,7 @@ const Appointments = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.post('http://localhost:5000/api/appointments', { doctorName, date, time, reason }, {
+      const { data } = await axios.post(import.meta.env.VITE_API_URL + '/api/appointments', { doctorName, date, time, reason }, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setAppointments(prev => [...prev, data]);

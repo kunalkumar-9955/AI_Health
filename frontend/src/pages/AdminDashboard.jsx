@@ -15,8 +15,8 @@ const AdminDashboard = () => {
     try {
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
       const [statsRes, usersRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/admin/stats', config),
-        axios.get('http://localhost:5000/api/admin/users', config)
+        axios.get(import.meta.env.VITE_API_URL + '/api/admin/stats', config),
+        axios.get(import.meta.env.VITE_API_URL + '/api/admin/users', config)
       ]);
       setStats(statsRes.data);
       setUsers(usersRes.data);
@@ -26,7 +26,7 @@ const AdminDashboard = () => {
   const deleteUser = async (id) => {
     if (!window.confirm('Delete this user permanently?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/users/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/users/${id}`, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setUsers(prev => prev.filter(u => u._id !== id));

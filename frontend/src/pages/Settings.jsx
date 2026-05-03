@@ -12,7 +12,7 @@ const Settings = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/users/profile', {
+        const { data } = await axios.get(import.meta.env.VITE_API_URL + '/api/users/profile', {
           headers: { Authorization: `Bearer ${userInfo.token}` }
         });
         if (!data.modes) data.modes = { ruralMode: false, seniorMode: false, womenHealthMode: false };
@@ -52,7 +52,7 @@ const Settings = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await axios.put('http://localhost:5000/api/users/profile', user, {
+      await axios.put(import.meta.env.VITE_API_URL + '/api/users/profile', user, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       

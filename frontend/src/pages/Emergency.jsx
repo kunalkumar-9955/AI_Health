@@ -37,7 +37,7 @@ const Emergency = () => {
   const fetchContacts = async () => {
     if (!userInfo) return;
     try {
-      const { data } = await axios.get('http://localhost:5000/api/emergency/contacts', {
+      const { data } = await axios.get(import.meta.env.VITE_API_URL + '/api/emergency/contacts', {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setContacts(data);
@@ -51,7 +51,7 @@ const Emergency = () => {
     if (!newContact.name || !newContact.phone || !newContact.email) return;
     setAddingContact(true);
     try {
-      const { data } = await axios.post('http://localhost:5000/api/emergency/contacts', newContact, {
+      const { data } = await axios.post(import.meta.env.VITE_API_URL + '/api/emergency/contacts', newContact, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setContacts(data);
@@ -66,7 +66,7 @@ const Emergency = () => {
 
   const deleteContact = async (id) => {
     try {
-      const { data } = await axios.delete(`http://localhost:5000/api/emergency/contacts/${id}`, {
+      const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/api/emergency/contacts/${id}`, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setContacts(data);
@@ -108,7 +108,7 @@ const Emergency = () => {
       const coords = await handleGetLocation();
       
       // Call SOS API with the real-time coordinates
-      await axios.post('http://localhost:5000/api/emergency/sos', { 
+      await axios.post(import.meta.env.VITE_API_URL + '/api/emergency/sos', { 
         lat: coords.lat, 
         lng: coords.lng 
       }, {
@@ -120,7 +120,7 @@ const Emergency = () => {
       
       // If location fails, still send SOS but without coordinates
       try {
-        await axios.post('http://localhost:5000/api/emergency/sos', { 
+        await axios.post(import.meta.env.VITE_API_URL + '/api/emergency/sos', { 
           lat: null, 
           lng: null 
         }, {

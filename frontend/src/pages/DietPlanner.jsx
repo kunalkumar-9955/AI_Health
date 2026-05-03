@@ -18,7 +18,7 @@ const DietPlanner = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.post('http://localhost:5000/api/premium/diet-planner', formData, {
+      const { data } = await axios.post(import.meta.env.VITE_API_URL + '/api/premium/diet-planner', formData, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setPlan(data);

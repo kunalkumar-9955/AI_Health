@@ -27,7 +27,7 @@ const Chatbot = () => {
 
   const fetchChats = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/chat', {
+      const { data } = await axios.get(import.meta.env.VITE_API_URL + '/api/chat', {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setMessages(data);
@@ -51,7 +51,7 @@ const Chatbot = () => {
     inputRef.current?.focus();
     
     try {
-      const { data } = await axios.post('http://localhost:5000/api/chat', { message: msg }, {
+      const { data } = await axios.post(import.meta.env.VITE_API_URL + '/api/chat', { message: msg }, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       // Replace temp msg with real data

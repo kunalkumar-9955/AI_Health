@@ -34,13 +34,13 @@ const HealthAnalyzer = () => {
     try {
       if (activeTab === 'report') {
         formData.append('report', file);
-        const { data } = await axios.post('http://localhost:5000/api/premium/report-analyzer', formData, {
+        const { data } = await axios.post(import.meta.env.VITE_API_URL + '/api/premium/report-analyzer', formData, {
           headers: { Authorization: `Bearer ${userInfo.token}`, 'Content-Type': 'multipart/form-data' }
         });
         setResult({ type: 'report', data: data.aiAnalysis });
       } else {
         formData.append('image', file);
-        const { data } = await axios.post('http://localhost:5000/api/premium/medicine-scanner', formData, {
+        const { data } = await axios.post(import.meta.env.VITE_API_URL + '/api/premium/medicine-scanner', formData, {
           headers: { Authorization: `Bearer ${userInfo.token}`, 'Content-Type': 'multipart/form-data' }
         });
         setResult({ type: 'medicine', data: data.aiAnalysis });
