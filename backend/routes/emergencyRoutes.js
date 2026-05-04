@@ -56,10 +56,15 @@ router.post('/sos', protect, async (req, res) => {
     // For demo purposes, we will mock the send or use Ethereal if no auth provided
     // To make this fully functional, the user needs to add EMAIL_USER and EMAIL_PASS to .env
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false, // TLS
       auth: {
         user: process.env.EMAIL_USER || 'demo@gmail.com',
         pass: process.env.EMAIL_PASS || 'demo123'
+      },
+      tls: {
+        rejectUnauthorized: false
       }
     });
 
@@ -100,10 +105,15 @@ router.get('/test-email', async (req, res) => {
     }
 
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false, // TLS
       auth: {
         user: emailUser,
         pass: emailPass
+      },
+      tls: {
+        rejectUnauthorized: false
       }
     });
 
