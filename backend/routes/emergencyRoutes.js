@@ -67,22 +67,24 @@ router.post('/sos', protect, async (req, res) => {
 
     if (emailList.length > 0) {
       const mailOptions = {
-        from: `"AI Health Emergency" <${process.env.EMAIL_USER}>`,
+        from: process.env.EMAIL_USER,
         to: emailList.join(','),
         subject: `🚨 EMERGENCY SOS ALERT from ${user.name}`,
         text: `This is an Emergency SOS Alert triggered by ${user.name}.\n\nCurrent Location: ${mapLink}\n\nPlease check on them immediately!`
       };
 
       if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-        await transporter.sendMail(mailOptions);
+        console.log("Attempting to send email...");
+        const info = await transporter.sendMail(mailOptions);
+        console.log("Email sent successfully. SMTP Response:", info.response);
       } else {
         console.log("Mocking SOS Email Send since EMAIL_USER/EMAIL_PASS not configured in .env");
-        console.log(mailOptions);
       }
     }
 
     res.status(200).json({ message: "SOS Alert processed successfully." });
   } catch (error) {
+    console.error("SOS Email Error:", error);
     res.status(500).json({ message: error.message });
   }
 });
@@ -106,7 +108,7 @@ router.get('/test-email', async (req, res) => {
     });
 
     const info = await transporter.sendMail({
-      from: `"AI Health Test" <${emailUser}>`,
+      from: emailUser,
       to: emailUser,
       subject: "Test Email from AI Health Backend",
       text: "If you are reading this, the email configuration on Render is working perfectly."
