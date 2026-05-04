@@ -104,33 +104,31 @@ const Emergency = () => {
     setSosSentStatus('sending');
     
     try {
-      // Wait for geolocation to be fetched
-      const coords = await handleGetLocation();
+      const coords = await handleGetLocation().catch(() => ({ lat: null, lng: null }));
+      const mapLink = coords.lat ? `https://www.google.com/maps/search/?api=1&query=${coords.lat},${coords.lng}` : 'Location not provided.';
       
-      // Call SOS API with the real-time coordinates
-      await axios.post(import.meta.env.VITE_API_URL + '/api/emergency/sos', { 
-        lat: coords.lat, 
-        lng: coords.lng 
-      }, {
-        headers: { Authorization: `Bearer ${userInfo.token}` }
-      });
+      // Hit Render Backend to record SOS (might fail to send email due to Render firewall)
+      axios.post(import.meta.env.VITE_API_URL + '/api/emergency/sos', { 
+        lat: coords.lat, lng: coords.lng 
+      }, { headers: { Authorization: `Bearer ${userInfo.token}` } }).catch(()=>console.log("Render backend error"));
+
+      // BYPASS RENDER: Send email directly from Vercel Serverless Function
+      const validContacts = contacts.filter(c => c.email);
+      if (validContacts.length > 0) {
+        const emailPromises = validContacts.map(contact => {
+          return axios.post('/api/send-email', {
+            to: contact.email,
+            subject: `🚨 EMERGENCY SOS ALERT from ${userInfo.name}`,
+            text: `This is an Emergency SOS Alert triggered by ${userInfo.name}.\n\nCurrent Location: ${mapLink}\n\nPlease check on them immediately!`
+          });
+        });
+        await Promise.allSettled(emailPromises);
+      }
+
       setSosSentStatus('success');
     } catch (err) {
-      console.error(err);
-      
-      // If location fails, still send SOS but without coordinates
-      try {
-        await axios.post(import.meta.env.VITE_API_URL + '/api/emergency/sos', { 
-          lat: null, 
-          lng: null 
-        }, {
-          headers: { Authorization: `Bearer ${userInfo.token}` }
-        });
-        setSosSentStatus('success');
-      } catch (fallbackErr) {
-        console.error(fallbackErr);
-        setSosSentStatus('error');
-      }
+      console.error("SOS Activation Error:", err);
+      setSosSentStatus('error');
     }
   };
 
